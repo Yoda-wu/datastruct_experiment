@@ -12,7 +12,7 @@ struct Node
 {
 	int data;
 	Node* next;
-	
+
 	Node() :next(nullptr) {};
 	Node(const int& d, Node* n = nullptr) :data(d), next(n) {}
 
@@ -20,7 +20,7 @@ struct Node
 
 /*
 * 自定义单向链表（无迭代器）
-* 主要功能： 
+* 主要功能：
 *			尾插结点，
 *			头插结点，
 *			判断是否为空
@@ -43,15 +43,17 @@ public:
 	List();
 	// 拷贝构造函数，通过重载运算符实现
 	List& operator=(const List& rhs);
-
+	List(const List& rhs);
 	// 析构函数
 	~List();
 
 	//  将链表清零
 	void clear();
 
+	int getLast();
+
 	// 从链表的尾部插入一个新的结点
-	void push_back(int val );
+	void push_back(int val);
 
 	// 将链表最后一个结点弹出
 	void pop_back();
@@ -66,6 +68,8 @@ public:
 	int getSize();
 	// 获取链表的头部指针
 	Node* getHead();
+
+	void setHead(Node*);
 	// 判断链表是否为空
 	bool isEmpty();
 };

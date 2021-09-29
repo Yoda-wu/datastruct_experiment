@@ -1,5 +1,5 @@
 #include"List.h"
-
+#include<iostream>
 /*
 * 无参构造函数
 */
@@ -13,9 +13,29 @@ List::List() {
 * @return List& 返回拷贝构造后的链表
 */
 List& List::operator=(const List& rhs) {
+	init();
+	//std::cout << "copy....." << std::endl;
 	List copy = rhs;
-	std::swap(*this, copy);
+	Node* p = copy.getHead()->next;
+	for (int i = 0; i < copy.getSize(); i++) {
+		int v = p->data;
+		this->push_back(v);
+		p = p->next;
+	}
 	return *this;
+}
+
+List::List(const List& rhs) {
+	init();
+	//
+	List copy = rhs;
+	Node* p = copy.getHead()->next;
+	for (int i = 0; i < copy.getSize(); i++) {
+		int v = p->data;
+		this->push_back(v);
+		p = p->next;
+	}
+	std::cout << "copy....." << std::endl;
 }
 
 /*
@@ -25,7 +45,8 @@ List& List::operator=(const List& rhs) {
 */
 void List::clear() {
 	Node* p = head;
-	while (p != nullptr) {
+	//std::cout << p << "  " << std::endl;
+	while (p->next != nullptr) {
 		Node* del = p;
 		p = p->next;
 		delete del;
@@ -38,7 +59,7 @@ void List::clear() {
 * @params val 结点的值
 * @return void
 */
-void List:: push_back(int val) {
+void List::push_back(int val) {
 	Node* p = head;
 	// 遍历到最后一个结点处
 	while (p->next != nullptr) {
@@ -142,5 +163,17 @@ bool List::isEmpty() {
 */
 List:: ~List() {
 	clear();
-	delete head;
+}
+
+void List::setHead(Node* node) {
+	head = node;
+
+}
+
+int List::getLast() {
+	Node* p = head;
+	while (p->next != nullptr) {
+		p = p->next;
+	}
+	return p->data;
 }
