@@ -17,3 +17,9 @@ BigInteger/Debug/BigInteger.ilk
 *.obj
 *.tlog
 *.tlog
+*.pdb
+*.obj
+*.log
+BigInteger/Debug/BigInteger.ilk
+BigInteger/Debug/BigInteger.exe
+BigInteger/.vs/BigInteger/v16/ipch/AutoPCH/d04cae23be11a0d4/BIGINTEGER.ipch
