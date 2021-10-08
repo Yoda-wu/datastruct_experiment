@@ -1,6 +1,28 @@
 #include "BigInteger.h"
 #include<iostream>
-
+#include<vector>
+bool isBiggerThan(Node* l1, Node* l2) {
+	std::vector<Node*> stack1;
+	std::vector<Node*> stack2;
+	while (l1 != nullptr && l2 != nullptr) {
+		stack1.push_back(l1);
+		stack2.push_back(l2);
+		l1 = l1->next;
+		l2 = l2->next;
+	}
+	while (!stack1.empty() && !stack2.empty()) {
+		Node* p1 = stack1.back();
+		stack1.pop_back();
+		Node* p2 = stack2.back();
+		stack2.pop_back();
+		if (p1->data > p2->data) {
+			return true;
+		}
+		else if(p1->data < p2->data) {
+			return false;
+		}
+	}
+}
 // 直接输出链表
 void BigInteger::printList() {
 	
@@ -77,7 +99,7 @@ bool BigInteger::operator==(BigInteger& op2) {
 bool BigInteger::operator!=(BigInteger& op2) {
 	return !(*this == op2);
 }
-bool BigInteger::operator>(BigInteger& op2) {
+bool BigInteger::operator > (BigInteger& op2) {
 	if (this->numbers->getSize() > op2.getNumber()->getSize()) {
 		return true;
 	}
@@ -85,19 +107,17 @@ bool BigInteger::operator>(BigInteger& op2) {
 		return false;
 	}
 	else {
-
+		return isBiggerThan(this->numbers->getHead(), op2.getNumber()->getHead());
 	}
-
-
 }
 bool BigInteger::operator >= (BigInteger& op2) {
-	return true;
+	return *this > op2 || *this == op2;
 }
 bool BigInteger::operator < (BigInteger& op2) {
-	return true;
+	return !(*this > op2 || *this == op2);
 }
 bool BigInteger::operator <= (BigInteger& op2) {
-	return true;
+	return !(*this > op2);
 }
 
 // 加法
@@ -105,18 +125,6 @@ BigInteger BigInteger::operator+(BigInteger& op2) {
 	//std::cout << "Adding...." << std::endl;
 	BigInteger b1;
 	List* ans = b1.getNumber();
-
-	if (sign == POSITIVE && op2.sign == NEGATIVE) {
-		op2.sign = NEGATOPOS;
-		return (*this - op2);
-	}
-	else if (sign == NEGATIVE && op2.sign == POSITIVE) {
-		this->sign = POSTONEGA;
-		return (op2 - *this);
-	}
-	else if (sign == NEGATIVE && op2.sign == NEGATIVE) {
-		b1.sign = NEGATIVE;
-	}
 
 	Node* opn1 = (*this >= op2) ? this->getNumber()->getHead()->next : op2.getNumber()->getHead()->next;
 	Node* opn2 = (*this < op2) ? this->getNumber()->getHead()->next : op2.getNumber()->getHead()->next;
@@ -156,8 +164,9 @@ BigInteger BigInteger::operator-(BigInteger& op2) {
 	BigInteger b1;
 	// 答案
 	List* ans = b1.getNumber();
-	
-	// TODO： 判断被减数和减数
+	Node* opn1 = (*this >= op2) ? this->getNumber()->getHead()->next : op2.getNumber()->getHead()->next;
+	Node* opn2 = (*this < op2) ? this->getNumber()->getHead()->next : op2.getNumber()->getHead()->next;
+
 
 	// 被减数
 	Node* num1 = this->getNumber()->getHead()->next;

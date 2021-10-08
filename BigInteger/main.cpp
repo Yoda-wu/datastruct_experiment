@@ -1,6 +1,6 @@
 #include "BigInteger.h"
 #include<iostream>
-
+#include <ctime>
 // 反转链表输出
 void printList(List* node) {
 	List newList;
@@ -12,10 +12,6 @@ void printList(List* node) {
 	}
 	//newList.pop_back();
 	Node* p = newList.getHead()->next;
-	while (p != nullptr) {
-		std::cout << p->data << " ";
-		p = p->next;
-	}
 	Node* head = (newList.getHead())->next;
 
 	Node* temp;
@@ -28,25 +24,27 @@ void printList(List* node) {
 		pre = cur;
 		cur = temp;
 	}
-	std::cout << std::endl;
+	
 	newList.setHead(pre);
 	newList.push_back(node->getHead()->next->data);
 	p = newList.getHead();
 	while (p != nullptr) {
-		std::cout << p->data << " ";
+		std::cout << p->data ;
 		p = p->next;
 	}
 	//std::cout << newList.getSize() << std::endl;
 
 }
 int main() {
-	BigInteger b1("+999");
-	BigInteger b2("+1000");
-	BigInteger b3 = b2-b1;
-	b3.printList();
-	//List l = b3.reverseList();
-	//std::cout << b3.getNumber()->getSize() << std::endl;
+	BigInteger b1("+1235674557441661541512316167126");
+	BigInteger b2("+25167378532541248123515152461626");
+	clock_t beginTime = clock();
+	std::cout << "1235674557441661541512316167126 ^(6) = " ;
+	BigInteger b3 = b1.power(6);
+	double second = double(clock() - beginTime) / CLOCKS_PER_SEC;
+
 	printList(b3.getNumber());
+	std::cout << " 用时： " << second << "s" << std::endl;
 	//std::cout << std::endl;
 	//b3.printList();
 	system("pause");
