@@ -1,5 +1,6 @@
 #pragma once
 #include<cmath>
+#include<vector>
 #include<iostream>
 template<typename Object>
 struct Node
@@ -59,36 +60,53 @@ private:
 	/**
 	* 插入结点值
 	*/
-	void addNode(Node<Object>*& node, Object value) {
+	Node<Object>* addNode(Node<Object>*& node, Object value) {
+		//if (node != nullptr) {
+		//	//std::cout << "In add function: " << node->value.name << std::endl;
+		//}
+		
 		if (node == nullptr) {
 			nodecount++;
-			node = new Node<Object>(value);
-			if (root == nullptr) {
-				std::cout << "root null" << std::endl;
-			}
-			return;
+			return new Node<Object>(value);
+			//if (node == nullptr) {
+			////	std::cout << "root null" << std::endl;
+			//}
+			//else {
+			//	std::cout << "In add function Node: " << node->value.name << std::endl;
+			//}
 		}
 		if (value < node->value) {
-			addNode(node->leftChild, value);
+			node->leftChild = addNode(node->leftChild, value);
 		}
 		else if (value > node->value) {
-			addNode(node->rightChild, value);
+			node->rightChild = addNode(node->rightChild, value);
 		}
 
 		node->height = std::max(getHeight(node->leftChild), getHeight(node->rightChild)) + 1;
 		int balance = getBalanceFactory(node);
 		if (balance > 1 && getBalanceFactory(node->leftChild) > 0) {
-			rightRotate(node);
+			//std::cout << "In add function need right rotate: " << node->value.name << std::endl;
+			return rightRotate(node);
 		}
 		if (balance < -1 && getBalanceFactory(node->rightChild) < 0) {
-			leftRotate(node);
+			//std::cout << "In add function need left rotate: " << node->value.name << std::endl;
+
+			return leftRotate(node);
 		}
 		if (balance > 1 && getBalanceFactory(node->leftChild) < 0) {
-			leftRightRotate(node);
+			//std::cout << "In add function need leftRight rotate: " << node->value.name << std::endl;
+			node->leftChild = leftRotate(node->leftChild);
+			return rightRotate(node);
+			
+			//std::cout << "	" << node->rightChild->value.name << std::endl;
 		}
 		if (balance < -1 && getBalanceFactory(node->rightChild) > 0) {
-			rightLeftRotate(node);
+			//std::cout << "In add function need rightLeft rotate: " << node->value.name << std::endl;
+
+			node->rightChild = rightRotate(node->rightChild);
+			return leftRotate(node);
 		}
+		return node;
 	}
 
 	/**
@@ -101,6 +119,7 @@ private:
 				return temp;
 			}
 			else if (temp->value > value) {
+				//std::cout <<"In find function "<< temp->value.name << " > " << value.name << " "<< ( temp->value.name > value.name) << std::endl;
 				temp = temp->leftChild;
 			}
 			else {
@@ -121,12 +140,14 @@ private:
 		return temp;
 	}
 
-	void remove(Node<Object>*& node, Object value) {
+	Node<Object>* remove(Node<Object>*& node, Object value) {
 		Node<Object>* deleteNode = find(value);
-		std::cout << root->value.name << std::endl;
 		if (deleteNode == nullptr) {
-			return;
+			return nullptr;
 		}
+		//std::cout << "In remove function Node value = " << deleteNode->value.name << " address = " << (int)deleteNode
+		//	<< " left child =  " << (int)deleteNode->leftChild << " right child =  " << (int)deleteNode->rightChild << std::endl;
+
 		// 待删除的结点左子树为空
 		if (deleteNode->leftChild == nullptr) {
 			Node<Object>* temp = deleteNode->rightChild;
@@ -140,26 +161,34 @@ private:
 			deleteNode = temp;
 		}
 		else {
-			deleteNode->value = findMin(deleteNode->rightChild)->value;
-			remove(deleteNode->rightChild, deleteNode->value);
+			Node<Object>* mini = findMin(deleteNode->rightChild);
+			Object tempValue = deleteNode->value;
+			deleteNode->value = mini->value;
+			mini->value = tempValue;
+			//std::cout << "In remove function update : " << deleteNode->value.name <<" "<<(int)deleteNode->rightChild << std::endl;
+			deleteNode->rightChild =  remove(mini, tempValue);
 		}
 		if (deleteNode == nullptr) {
-			return;
+			return node;
 		}
+		//std::cout << "In remove function 2 : " << deleteNode->value.name << std::endl;
 		deleteNode->height = std::max(getHeight(node->leftChild), getHeight( node->rightChild) ) + 1;
 		int balance = getBalanceFactory(node);
 		if (balance > 1 && getBalanceFactory(node->leftChild) > 0) {
-			rightRotate(node);
+			return rightRotate(node);
 		}
 		if (balance < -1 && getBalanceFactory(node->rightChild) < 0) {
-			leftRotate(node);
+			return leftRotate(node);
 		}
 		if (balance > 1 && getBalanceFactory(node->leftChild) < 0) {
-			leftRightRotate(node);
+			node->leftChild = leftRotate(node->leftChild);
+			return rightRotate(node);
 		}
 		if (balance < -1 && getBalanceFactory(node->rightChild) > 0) {
-			rightLeftRotate(node);
+			node->rightChild = rightRotate(node->rightChild);
+			return leftRotate(node);
 		}
+		return node;
 	}
 public:
 	BST(Node<Object>* tree):root(tree),nodecount(0){}
@@ -222,44 +251,38 @@ public:
 	/**
 	* 右旋转 对应 左左情况
 	*/
-	void rightRotate(Node<Object>*& node) {
+	Node<Object>* rightRotate(Node<Object>*& node) {
 		Node<Object>* target = node->leftChild;
+		std::cout << "	In right rotate: " << node->value.name << " " << target->value.name << std::endl;
+
 		Node<Object>* targetRight = target->rightChild;
 		target->rightChild = node;
 		node->leftChild = targetRight;
+		std::cout << "	In right rotate: " << node->value.name << " = " << target->rightChild->value.name << std::endl;
+
 		// 更新高度
-		node->height = std::max(node->leftChild->height, node->rightChild->height) + 1;
-		target->height = std::max(target->leftChild->height, target->rightChild->height) + 1;
+		node->height = std::max( getHeight(node->leftChild),getHeight( node->rightChild) ) + 1;
+		target->height = std::max(getHeight(target->leftChild), getHeight( target->rightChild )) + 1;
+		return target;
 	}
 
 	/*
 	* 左旋 对应 右右情况
 	*/
-	void leftRotate(Node<Object>*& node) {
+	Node<Object>* leftRotate(Node<Object>*& node) {
 		Node<Object>* target = node->rightChild;
+		std::cout << "	In left rotate: " <<node->value.name<<" "<< target->value.name << (int)target<< std::endl;
 		Node<Object>* targetLeft = target->leftChild;
 		target->leftChild = node;
 		node->rightChild = targetLeft;
+		std::cout << "	In left rotate: " << node->value.name << " = " << target->leftChild->value.name<<(int)target->leftChild << "  "<<(int)node<< std::endl;
+
 		// 更新高度
-		node->height = std::max(node->leftChild->height, node->rightChild->height) + 1;
-		target->height = std::max(target->leftChild->height, target->rightChild->height) + 1;
+		node->height = std::max(getHeight(node->leftChild), getHeight(node->rightChild)) + 1;
+		target->height = std::max(getHeight(target->leftChild),getHeight( target->rightChild) ) + 1;
+		return target;
 	}
 
-	/*
-	* 左右旋 对应 对左儿子右插入
-	*/
-	void leftRightRotate(Node<Object>*& node) {
-		leftRotate(node->leftChild);
-		rightRotate(node);
-	}
-
-	/**
-	* 右左旋 对应 对右儿子左插入
-	*/
-	void rightLeftRotate(Node<Object>*& node) {
-		rightRotate(node->rightChild);
-		leftRotate(node);
-	}
 
 	/**
 	* 插入结点
@@ -270,7 +293,7 @@ public:
 			return -1;
 		}
 		//std::cout << " Add " << std::endl;
-		addNode(root, value);
+		root = addNode(root, value);
 		return 1;
 	}
 	/**
@@ -278,9 +301,11 @@ public:
 	*/
 	Object findValue(Object value) {
 		Node<Object>* temp = root;
+		
 		while (temp != nullptr) {
-			
+			//std::cout << temp->value.name << " ";
 			if (temp->value == value) {
+				std::cout << (int)temp->rightChild<<" "<< (int)temp->leftChild << " ";
 				return temp->value;
 			}
 			else if (temp->value > value) {
@@ -291,9 +316,9 @@ public:
 			}
 		}
 		if (root == nullptr) {
-			std::cout << "OUT" << std::endl;
+			//std::cout << "OUT" << std::endl;
 		}
-		
+		std::cout << std::endl;
 		return Object();
 	}
 
@@ -301,7 +326,17 @@ public:
 	* 删除结点
 	*/
 	void remove(Object value) {
-		remove(root, value);
+		Node<Object>* node = find(value);
+		if (node != nullptr) {
+			root = remove(root, value);	
+			//std::cout <<"In remove"<< (int)root << std::endl;
+
+			return;
+		}
+		else {
+			std::cout << "数据库中无该城市" << std::endl;
+		}
+		
 	}
 	/**
 	* 更改城市坐标
@@ -316,5 +351,58 @@ public:
 		return 1;
 	}
 
+	/**
+	* 遍历返回结点
+	*/
+	std::vector<Node<Object>*> traverseTree() {
+		Node<Object>* temp = root;
+		std::vector<Node<Object>*> list;
+		if (temp == nullptr) {
+			return  list;
+		}
+		std::vector< Node<Object>* > stack;
+		
+		stack.push_back(temp);
+		while (!stack.empty()) {
+			Node<Object>* p = stack.back();
+			stack.pop_back();
+			list.push_back(p);
+			if (p->leftChild != nullptr) {
+				stack.push_back(p->leftChild);
+				
+			}
+			if (p->rightChild != nullptr) {
+				stack.push_back(p->rightChild);
+				
+			}
+		}
+		return list;
+	}
+
+	void traversePrintTree() {
+		Node<Object>* temp = root;
+		if (temp == nullptr) {
+			return;
+		}
+		std::vector< Node<Object>* > stack;
+
+		stack.push_back(temp);
+		while (!stack.empty()) {
+			Node<Object>* p = stack.back();
+			stack.pop_back();
+
+			std::cout << " Node value = " << p->value.name << " address = " << (int)p
+				<< " left child =  " << (int)p->leftChild << " right child =  " << (int)p->rightChild << std::endl;
+			if (p->leftChild != nullptr) {
+				stack.push_back(p->leftChild);
+
+			}
+			if (p->rightChild != nullptr) {
+				stack.push_back(p->rightChild);
+
+			}
+		}
+
+	}
 };
 
