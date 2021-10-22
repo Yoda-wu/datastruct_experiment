@@ -18,7 +18,7 @@ struct City {
 		return this->name == city.name;
 	}
 	bool operator >(City city) {
-		std::cout<<"   In city " << this->name << " > " << city.name << " " << (this->name > city.name) << std::endl;
+		//std::cout<<"   In city " << this->name << " > " << city.name << " " << (this->name > city.name) << std::endl;
 
 		return this->name > city.name;
 	}
@@ -64,11 +64,11 @@ public:
 	}
 	// 添加城市记录
 	void insert(City city) {
-		std::cout << "INSERT " << city.name << " INTO DATABASE" << std::endl;
+		//std::cout << "INSERT " << city.name << " INTO DATABASE" << std::endl;
 		if (bstTree.add(city) < 0) {
-			std::cout << "该城市已存在" << std::endl;
+			//std::cout << "该城市已存在" << std::endl;
 		}
-		std::cout << "成功添加" << std::endl;
+		//std::cout << "成功添加" << std::endl;
 	}
 	// 删除城市
 	void deleteCity(std::string name) {
@@ -94,28 +94,36 @@ public:
 	}
 	// 打印出与指定点给定距离的所有城市
 	void printRecord(int x, int y, double distance) {
-		std::vector<Node<City>* > cityList= bstTree.traverseTree();
+		/*std::vector<Node<City>* > cityList= bstTree.traverseTree();
 		std::cout << "在目标点 ： " << "( " << x << " , " << y << " ) " << distance << " 范围内的城市有：" << std::endl;
 		for (auto node : cityList) {
 			City city = node->value;
 			if (isNearBy(city,x,y, distance) ){
 				std::cout << city.name << " ( " << city.x << " , " << city.y << " ) " << std::endl;
 			}
-		}
+		}*/
+		bstTree.printNodeInDistance(x, y, distance);
 	}
 
 	void printAll() {
 		std::vector<Node<City>* > cityList = bstTree.traverseTree();
 		if (cityList.size() == 0) {
 			std::cout << "目前数据库为空，请添加数据" << std::endl;
+			return;
 		}
+		std::cout << "共有" << bstTree.getSize() << "数据" << std::endl;
+		int count = 0;
 		for (auto node : cityList) {
 			City city = node->value;
 			
 			std::cout << city.name << " ( " << city.x << " , " << city.y << " ) " << std::endl;
+			count++;
 			
 		}
 	}
-
+	void getALL() {
+		bstTree.traversePrintTree(false);
+		
+	}
 };
 

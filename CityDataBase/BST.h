@@ -253,12 +253,12 @@ public:
 	*/
 	Node<Object>* rightRotate(Node<Object>*& node) {
 		Node<Object>* target = node->leftChild;
-		std::cout << "	In right rotate: " << node->value.name << " " << target->value.name << std::endl;
+		//std::cout << "	In right rotate: " << node->value.name << " " << target->value.name << std::endl;
 
 		Node<Object>* targetRight = target->rightChild;
 		target->rightChild = node;
 		node->leftChild = targetRight;
-		std::cout << "	In right rotate: " << node->value.name << " = " << target->rightChild->value.name << std::endl;
+		//	std::cout << "	In right rotate: " << node->value.name << " = " << target->rightChild->value.name << std::endl;
 
 		// 更新高度
 		node->height = std::max( getHeight(node->leftChild),getHeight( node->rightChild) ) + 1;
@@ -271,11 +271,11 @@ public:
 	*/
 	Node<Object>* leftRotate(Node<Object>*& node) {
 		Node<Object>* target = node->rightChild;
-		std::cout << "	In left rotate: " <<node->value.name<<" "<< target->value.name << (int)target<< std::endl;
+		//std::cout << "	In left rotate: " <<node->value.name<<" "<< target->value.name << (int)target<< std::endl;
 		Node<Object>* targetLeft = target->leftChild;
 		target->leftChild = node;
 		node->rightChild = targetLeft;
-		std::cout << "	In left rotate: " << node->value.name << " = " << target->leftChild->value.name<<(int)target->leftChild << "  "<<(int)node<< std::endl;
+		//std::cout << "	In left rotate: " << node->value.name << " = " << target->leftChild->value.name<<(int)target->leftChild << "  "<<(int)node<< std::endl;
 
 		// 更新高度
 		node->height = std::max(getHeight(node->leftChild), getHeight(node->rightChild)) + 1;
@@ -379,7 +379,7 @@ public:
 		return list;
 	}
 
-	void traversePrintTree() {
+	void traversePrintTree(bool isPrint) {
 		Node<Object>* temp = root;
 		if (temp == nullptr) {
 			return;
@@ -390,9 +390,10 @@ public:
 		while (!stack.empty()) {
 			Node<Object>* p = stack.back();
 			stack.pop_back();
-
-			std::cout << " Node value = " << p->value.name << " address = " << (int)p
-				<< " left child =  " << (int)p->leftChild << " right child =  " << (int)p->rightChild << std::endl;
+			if (isPrint) {
+				std::cout << " Node value = " << p->value.name << " address = " << (int)p
+					<< " left child =  " << (int)p->leftChild << " right child =  " << (int)p->rightChild << std::endl;
+			}
 			if (p->leftChild != nullptr) {
 				stack.push_back(p->leftChild);
 
@@ -403,6 +404,39 @@ public:
 			}
 		}
 
+	}
+	bool isNearBy(Object city, int x, int y, double distance) {
+		int cityX = city.x;
+		int cityY = city.y;
+		double dis = sqrt((cityX - x) * (cityX - x) + (cityY - y) * (cityY - y));
+		if ((dis - distance) < 0.01) {
+			return true;
+		}
+		return false;
+	}
+	void printNodeInDistance(int x, int y, int distance) {
+		Node<Object>* temp = root;
+		if (temp == nullptr) {
+			return;
+		}
+		std::vector< Node<Object>* > stack;
+		std::cout << "在目标点 ： " << "( " << x << " , " << y << " ) " << distance << " 范围内的城市有：" << std::endl;
+		stack.push_back(temp);
+		while (!stack.empty()) {
+			Node<Object>* p = stack.back();
+			stack.pop_back();
+			if (isNearBy(p->value, x, y, distance) ){
+				std::cout << p->value.name << " ( " << p->value.x << " , " << p->value.y << " ) " << std::endl;
+			}
+			if (p->leftChild != nullptr) {
+				stack.push_back(p->leftChild);
+
+			}
+			if (p->rightChild != nullptr) {
+				stack.push_back(p->rightChild);
+
+			}
+		}
 	}
 };
 
