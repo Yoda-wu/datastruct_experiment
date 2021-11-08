@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{df6c37b7-80f5-45f0-a366-d8bee848c5c3}</ProjectGuid>
-    <RootNamespace>CityDataBase</RootNamespace>
+    <ProjectGuid>{1fcb2953-7847-4e82-bad8-d204baae1605}</ProjectGuid>
+    <RootNamespace>SortingAlgorithm</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,11 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BST.h" />
-    <ClInclude Include="CityDataBase.h" />
+    <ClInclude Include="SortUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SortUtil.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
