@@ -6,11 +6,25 @@
 class SortUtil {
 	
 private:
+	/**
+	* 下陷函数
+	*/
 	static void percDown(std::vector<int>&, int , int );
+	/**
+	* 归并函数
+	*/
 	static void merge(std::vector<int>&, std::vector<int>&, int, int, int);
+	/**
+	* 归并排序递归函数
+	*/
 	static void mergeSort(std::vector<int>&, std::vector<int>&, int, int);
+	/**
+	* 快速排序递归函数
+	*/
 	static void quickSort(std::vector<int>&, int, int);
+
 public:
+
 	SortUtil() {}
 	~SortUtil() {}
 
