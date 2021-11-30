@@ -56,31 +56,42 @@ void initMap() {
 /*
 * Dijkstra算法
 */
-void Dijkstra(int map[N][N], int midCity) {
+void Dijkstra(int map[N][N], int midCity,int start=0, int end= N-1) {
 	queue<int> que;
-	que.push(0);
-	isvisted[0] = true;
-	len[0] = 0;
+	que.push(start);
+	isvisted[start] = true;
+	if (len[start] == INTEGER_MAX) {
+		len[start] = 0;
+	}
+	
+	//cout << start<<" "<<end << endl;
 	while (!que.empty()) {
 		auto city = que.front();
 		int length = len[city];
 		que.pop();
 		isvisted[city] = true;
-		for (int i = 0; i < N; i++) {
+		if (city == midCity) {
+			return;
+		}
+		for (int i = start; i < N; i++) {
 			if (( map[city][i] < INTEGER_MAX) && !isvisted[i]) {
+				//cout << "len = " << len[i] << endl;
 				if (len[i] > (map[city][i]+ length) ){
 					pre[i] = city+1;
 					len[i] = (map[city][i] + length);
 					que.push(i);
 
 				}
-				
 			}
 		}
-		cout << endl;
+		
+		
 	}
 
 }
+
+
+
 /*
 * 打印权重矩阵
 */
@@ -142,13 +153,43 @@ void printPath() {
 	cout << endl;
 }
 
+void target(int map[N][N],  int target,int start,int end) {
+	Dijkstra(map, target,start);
+	/*printPath();*/
+	Dijkstra(map, end, target,end );
+	printPath();
+}
 int main() {
-	initMap();
+	cout << "路程矩阵： " << endl;
 	printMap(lengthMap);
-	Dijkstra(lengthMap,NULL);
+	cout << "时间矩阵： " << endl;
+	printMap(timeMap);
+	initMap();
+	int start;
+	int end;
+	cout << "输入两个城市的代码(1-6): " << endl;
+	cout << "起始点: ";
+	cin >> start;
+	start--;
+	cout << "终止点: ";
+	cin >> end;
+	end--;
+	cout << "推荐的最短里程路径:" << endl;
+	Dijkstra(lengthMap, end,start,end);
 	printPath();
 	initMap();
-	printMap(timeMap);
-	Dijkstra(timeMap, NULL);
+	cout << "最短用时路径:" << endl;
+	Dijkstra(timeMap, end, start, end);
 	printPath();
+	cout << "输入中间城市的代码(1-6)： " << endl;
+	int mid;
+	cin >> mid;
+	mid--;
+	initMap();
+	cout << "推荐的最短里程路径:" << endl;
+	target(lengthMap,mid,start,end);
+	initMap();
+	cout << "最短用时路径:" << endl;
+	target(timeMap, end, start, end);
+	
 }
